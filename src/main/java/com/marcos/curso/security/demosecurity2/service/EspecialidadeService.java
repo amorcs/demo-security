@@ -36,5 +36,14 @@ public class EspecialidadeService {
 						:especialidadeRepository.findAllByTitulo(datatables.getSearch(), datatables.getPageable());
 		return datatables.getResponse(page);
 	}
+
+	@Transactional(readOnly = true)
+	public Especialidade buscaProId(Long id) {
+		return especialidadeRepository.findById(id).get();
+	}
+	@Transactional(readOnly = false)
+	public void remover(Long id) {
+		especialidadeRepository.deleteById(id);
+	}
 	
 }
