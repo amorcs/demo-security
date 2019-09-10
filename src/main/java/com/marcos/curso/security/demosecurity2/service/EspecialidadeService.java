@@ -1,6 +1,8 @@
 package com.marcos.curso.security.demosecurity2.service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -44,6 +46,24 @@ public class EspecialidadeService {
 	@Transactional(readOnly = false)
 	public void remover(Long id) {
 		especialidadeRepository.deleteById(id);
+	}
+	
+	@Transactional(readOnly = true)
+	public List<String> buscarEspecialidadeByTermo(String termo) {
+		return especialidadeRepository.findEspecialidadeByTermo(termo);
+	}
+
+	@Transactional(readOnly = true)
+	public Set<Especialidade> buscarPorTitulos(String[] titulos) {
+		return especialidadeRepository.findByTitulos(titulos);
+	}
+
+	@Transactional(readOnly = true)
+	public Map<String, Object> buscarEspecialidadesPorMedico(Long id, HttpServletRequest request) {
+			datatables.setRequest(request);
+			datatables.setColunas(DatatablesColunas.ESPECIALIDADES);
+			Page<Especialidade> page = especialidadeRepository.findByIdMedico(id, datatables.getPageable());			
+		return datatables.getResponse(page);
 	}
 	
 }

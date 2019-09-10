@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -14,6 +15,8 @@ import com.marcos.curso.security.demosecurity2.domain.Medico;
 import com.marcos.curso.security.demosecurity2.domain.Usuario;
 import com.marcos.curso.security.demosecurity2.service.MedicoService;
 import com.marcos.curso.security.demosecurity2.service.UsuarioService;
+
+
 
 @Controller
 @RequestMapping("medicos")
@@ -25,9 +28,10 @@ public class MedicoController {
 	private UsuarioService usuarioService;
 	
 	@GetMapping({"/dados"})
-	public String abrirPorMedico(Medico medico, ModelMap modelMap, @AuthenticationPrincipal User user) {
+	public String abrirPorMedico(Medico medico, 
+			ModelMap modelMap, @AuthenticationPrincipal User user) {
 		if (medico.hasNotId()) {
-			medico = medicoService.buscarPorEmail(user.getUsername());
+			medico = medicoService.buscarPorUsuarioId(user.getUsername());
 			modelMap.addAttribute("medico", medico);
 		}
 		return "medico/cadastro";
@@ -41,17 +45,25 @@ public class MedicoController {
 			medico.setUsuario(usuario);
 		}		
 		medicoService.salvar(medico);
-		attr.addFlashAttribute("sucesso","Operação realizada com sucesso");
-		attr.addFlashAttribute("medico",medico);
+			attr.addFlashAttribute("sucesso","Operação realizada com sucesso");
+			attr.addFlashAttribute("medico",medico);
 		return "redirect:/medicos/dados";
 	}
 	
-	@PostMapping("editar")
+	@PostMapping("/editar")
 	public String editar(Medico medico, RedirectAttributes attr) {
 		medicoService.editar(medico);
-		attr.addFlashAttribute("sucesso","Operação realizada com sucesso");
-		attr.addFlashAttribute("medico",medico);
+			attr.addFlashAttribute("sucesso","Operação realizada com sucesso");
+			attr.addFlashAttribute("medico", medico);
 		return "medico/cadastro";
+	}
+	
+	@GetMapping("/id/{idMed}/excluir/especializacao/{idEsp}")
+	public String excluir(@PathVariable("idMed")Long idMed, @PathVariable("idEsp")Long idEsp,
+				RedirectAttributes attr) {
+			medicoService.excluirEspecialidadePorMedicoId(idMed, idEsp);
+		attr.addAttribute("sucesso", "Especialidade removida com sucesso");
+		return "redirect:/medicos/dados";
 	}
 	
 			

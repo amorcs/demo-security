@@ -10,7 +10,6 @@ import com.marcos.curso.security.demosecurity2.domain.Perfil;
 
 @Component
 public class PerfisConversor implements Converter<String[], List<Perfil>>{
-
 	@Override
 	public List<Perfil> convert(String[] source) {
 		List<Perfil> perfis = new ArrayList<Perfil>();
@@ -21,5 +20,5 @@ public class PerfisConversor implements Converter<String[], List<Perfil>>{
 		}
 		return perfis;
 	}
-	
+		
 }
